@@ -41,8 +41,8 @@ exports.addProduct = (req, res) => {
 
   const store_id = 1;
 
-  // ✅ UPDATE: validasi input
-  if (!nama_produk || !harga_beli || !harga_jual || !stok) {
+  // ✅ UPDATE: validasi input yang lebih baik agar nilai 0 tidak tertolak
+  if (!nama_produk || harga_beli === undefined || harga_jual === undefined || stok === undefined) {
     return res.status(400).json({
       success: false,
       message: "Data produk tidak lengkap"
