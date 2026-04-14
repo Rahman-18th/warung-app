@@ -1,0 +1,17 @@
+Saya memiliki project fullstack Warung App (React/Vite untuk frontend, Node.js/Express/MySQL untuk backend) yang sedang dalam persiapan deploy ke production. Saat ini ada beberapa masalah kritis terkait keamanan dan konfigurasi yang harus diperbaiki.
+
+Mari kita kerjakan secara bertahap agar kode tidak berantakan. Sebagai Tahap 1, tolong pandu saya langkah demi langkah beserta kode lengkapnya untuk menyelesaikan 6 masalah CRITICAL berikut:
+
+- Database Config: Pindahkan konfigurasi koneksi MySQL (host, user, password, database) dari hardcoded ke dalam file .env.
+
+- JWT Secret: Berikan panduan dan contoh pembuatan string JWT Secret yang kuat (minimal 64 karakter) untuk file .env.
+
+- CORS: Ubah app.use(cors()) agar dibatasi hanya untuk domain frontend tertentu menggunakan environment variables.
+
+- API Base URL: Ubah hardcoded localhost:5000 di instance axios frontend agar menggunakan import.meta.env.VITE_API_URL.
+
+- Migration Script: Buatkan script migrasi SQL atau Node.js yang lengkap untuk membuat tabel users, products, transactions, dan transaction_details (karena saat ini script yang ada belum lengkap).
+
+- Protected Route: Perbaiki redirect logic pada komponen ProtectedRoute di frontend agar mengarahkan user yang belum login ke path / (bukan /login yang menghasilkan 404).
+
+Tolong berikan instruksinya satu per satu per file yang harus saya edit, mulai dari file konfigurasi backend.

@@ -1,8 +1,8 @@
 const db = require('../config/db');
 
-// ===============================
+
 // CREATE TRANSACTION (KERANJANG)
-// ===============================
+
 exports.createTransaction = (req, res) => {
   const { cart } = req.body; // cart array of { product_id, jumlah }
 

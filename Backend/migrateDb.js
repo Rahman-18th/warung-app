@@ -22,7 +22,31 @@ async function migrate() {
     };
 
     try {
-        // 1. Buat tabel transactions jika belum ada (Header)
+        // 1. Buat tabel users
+        await executeDDL(`
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                store_id INT DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        // 2. Buat tabel products
+        await executeDDL(`
+            CREATE TABLE IF NOT EXISTS products (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nama_produk VARCHAR(100) NOT NULL,
+                harga_beli DECIMAL(10, 2) NOT NULL,
+                harga_jual DECIMAL(10, 2) NOT NULL,
+                stok INT NOT NULL,
+                store_id INT DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        // 3. Buat tabel transactions jika belum ada (Header)
         await executeDDL(`
             CREATE TABLE IF NOT EXISTS transactions (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,7 +56,7 @@ async function migrate() {
             )
         `);
 
-        // 2. Buat tabel transaction_details (Detail Item)
+        // 4. Buat tabel transaction_details (Detail Item)
         await executeDDL(`
             CREATE TABLE IF NOT EXISTS transaction_details (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,7 +73,27 @@ async function migrate() {
             )
         `);
 
-        console.log("Migrasi database berhasil! Tabel transactions dan transaction_details siap digunakan.");
+        // 5. Seed Admin User
+        const bcrypt = require('bcryptjs');
+        const userCount = await new Promise((resolve, reject) => {
+            db.query('SELECT COUNT(*) AS count FROM users', (err, results) => {
+                if (err) reject(err); else resolve(results[0].count);
+            });
+        });
+
+        if (userCount === 0) {
+            const hashedPassword = await bcrypt.hash('admin123', 10);
+            await new Promise((resolve, reject) => {
+                db.query('INSERT INTO users (username, password, store_id) VALUES (?, ?, ?)', ['admin', hashedPassword, 1], (err) => {
+                    if (err) reject(err); else resolve();
+                });
+            });
+            console.log("✅ Admin user berhasil dibuat (Username: admin, Password: admin123)");
+        } else {
+            console.log("✅ Admin user sudah ada, melewati proses seeding.");
+        }
+
+        console.log("Migrasi database berhasil! Semua tabel dan initial data siap digunakan.");
     } catch (error) {
         console.error("Migrasi gagal:", error);
     } finally {
